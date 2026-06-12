@@ -29,6 +29,7 @@ class SetupApp():
             bg=COLORS['bg_main'])
         main_frame.pack(fill='both', expand=1, pady=20, padx=20)
 
+        # ________ presets browser for edit ________
         # ________find python folder________
         find_dir_frame = tk.Frame(
             main_frame,

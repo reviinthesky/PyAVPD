@@ -6,6 +6,7 @@ from .setup_ui import COLORS, SetupApp
 class MainWindow:
     def __init__(self, root: tk.Tk):
         self.root = root
+        self.root.configure(bg=COLORS['bg_main'])
         main_frame = tk.Frame(
             self.root,
             bg=COLORS['bg_main'])
@@ -122,8 +123,8 @@ class MainWindow:
 
     def open_setup_window(self):
         setup_root = tk.Toplevel(self.root)
-        setup_root.title('Setup Configuration')
-        setup_root.geometry('600x600')
+        setup_root.title('Setup Preset')
+        setup_root.geometry('980x820')
         setup_root.resizable(False, False)
 
         setup_app = SetupApp(setup_root)
@@ -166,8 +167,8 @@ class MainWindow:
 
 if __name__ == '__main__':
     root = tk.Tk()
-    root.title('Setup Preset')
-    root.geometry('1080x900')
+    root.title('PyAVPD')
+    root.geometry('460x400')
     root.resizable(False, False)
     app = MainWindow(root)
     root.mainloop()
