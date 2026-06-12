@@ -10,7 +10,6 @@ class MainWindow(ParentUI):
         self.default_message = 'Select project directory'
         super().__init__(root, self.default_message)
         # ______ preset browser _____
-        presets_list = get_all_preset_keys()
         preset_browser_frame = make_frame(
             self.main_frame,
             row=1, column=0, rowspan=3, sticky='ns', padx=(0, 20), pady=0)
@@ -45,8 +44,7 @@ class MainWindow(ParentUI):
             height=15,
             selectmode='single')
         self.presets_listbox.grid(row=2, column=0, padx=10, pady=10, sticky='nsew')
-        for preset in presets_list:
-            self.presets_listbox.insert('end', preset)
+        self.load_presets()
 
         # ______ big setup button ______
         setup_frame = make_frame(self.main_frame, row=4, pady=40)
@@ -69,6 +67,12 @@ class MainWindow(ParentUI):
         self.setup_button.bind(
             '<Leave>', lambda e: self.setup_button.config(bg=COLORS['accent']))
 
+    def load_presets(self):
+        self.presets_listbox.delete(0, 'end')
+        presets_list = get_all_preset_keys()
+        for preset in presets_list:
+            self.presets_listbox.insert('end', preset)
+
     def edit_selected_preset(self) -> None:
         preset_name = self.presets_listbox.get('active')
         if not preset_name:
@@ -83,7 +87,8 @@ class MainWindow(ParentUI):
         setup_root.resizable(False, False)
 
         setup_app = SetupApp(setup_root, preset_data)
-        setup_app.run()
+        self.root.wait_window(setup_root)
+        self.load_presets()
 
     def run(self) -> None:
         self.root.mainloop()

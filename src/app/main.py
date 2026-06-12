@@ -14,5 +14,4 @@ except AttributeError:
     os._exit(0)
 
 project_dir = app.dir_var.get()
-result = run_bat(project_dir, data)
-print(result)
+run_bat(project_dir, data)

@@ -232,7 +232,7 @@ class SetupApp(ParentUI):
                 'config_files': self.config_files_presets
             }}
         save_json(preset_values)
-        root.destroy()
+        self.root.destroy()
 
     def delete_from_listbox(self) -> None:
         selection = self.package_list.curselection()

@@ -3,7 +3,7 @@ import subprocess
 from pathlib import Path
 from typing import Any
 from .path import get_base_path
-temp_dir = get_base_path('temp/requirements.txt')
+temp_dir = get_base_path('temp\\requirements.txt')
 bat_dir = Path('src/app/deploy.bat')
 
 
@@ -28,10 +28,13 @@ def run_bat(project_dir: str, preset_data: dict[str, dict]):
     args: list[str] = [
         str(bat_dir), project_dir,
         python_dir, requirements_dir]
-    config_files = data.get('config_files', {})
-    if config_files:
-        for k, v in config_files.items():
-            args.extend([k, v])
     subprocess.Popen(
         args, text=True,
         creationflags=subprocess.CREATE_NEW_CONSOLE)
+
+    configs_data = data.get('config_files', {})
+    if configs_data:
+        for file_name, file_content in configs_data.items():
+            path = Path(project_dir) / file_name
+            with open(path, 'w', encoding='utf-8') as file:
+                file.write(file_content)

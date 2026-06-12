@@ -3,3 +3,5 @@ venv/
 mypy.ini
 .flake8
 __pycache__/
+temp/
+presets/
