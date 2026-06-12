@@ -9,18 +9,19 @@ echo project directory: %PROJECT_DIR%
 echo python directory: %PYTHON_DIR%/python.exe
 echo pip packages directory: %PIP_PACKAGES%
 
-cd %PROJECT_DIR%
-%PYTHON_DIR%/python.exe -m venv venv
+cd "%PROJECT_DIR%"
+"%PYTHON_DIR%/python.exe" -m venv venv
 call venv/Scripts/Activate
 if not "%PIP_PACKAGES%" == ""(
     echo requirements.txt path exists, installing packages...
-    python -m pip install -r %PIP_PACKAGES%
+    python -m pip install -r "%PIP_PACKAGES%"
     color 2
     echo pip installed
 ) else (
     color 3
     echo no packages passed, skipping...
 )
+call deactivate
 
 :process_configs
 if "%4"=="" goto configs_done
@@ -45,5 +46,7 @@ exit /b 1
 color 2
 echo All configs files created successfully
 echo Setup completed. 
+start "" "%PROJECT_DIR%"
+exit /b 0
 
 
