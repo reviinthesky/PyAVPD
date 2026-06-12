@@ -12,7 +12,7 @@ def save_json(new_preset: dict[str, dict]) -> None:
     with open(
             get_base_path(f'presets/{preset_name}.json'), 'w',
             encoding='utf-8') as file:
-        json.dump(new_preset, file)
+        json.dump(new_preset, file, indent=2)
 
 
 def get_json_data(preset_name: str) -> dict:
@@ -22,6 +22,7 @@ def get_json_data(preset_name: str) -> dict:
                 'r', encoding='utf-8') as file:
             result_data = json.load(file)
     except FileNotFoundError:
+        print(f'{preset_name} not found')
         result_data = {}
 
     return result_data
@@ -29,4 +30,4 @@ def get_json_data(preset_name: str) -> dict:
 
 def get_all_preset_keys() -> list[str]:
     folder_path = Path(get_base_path('presets/'))
-    return [file.name for file in folder_path.glob('*.json')]
+    return [file.name.replace('.json', '') for file in folder_path.glob('*.json')]

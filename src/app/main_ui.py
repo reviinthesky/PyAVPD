@@ -7,7 +7,8 @@ from .setup_ui import SetupApp
 
 class MainWindow(ParentUI):
     def __init__(self, root: tk.Tk):
-        super().__init__(root, 'Select project directory')
+        self.default_message = 'Select project directory'
+        super().__init__(root, self.default_message)
         # ______ preset browser _____
         presets_list = get_all_preset_keys()
         preset_browser_frame = make_frame(
@@ -87,14 +88,18 @@ class MainWindow(ParentUI):
     def run(self) -> None:
         self.root.mainloop()
 
-    def deploy(self) -> dict:
+    def deploy(self) -> None:
         preset_name = self.presets_listbox.get('active')
         if not preset_name:
             messagebox.showwarning('Warning', 'Please select preset')
             return  # type: ignore
+        if self.dir_var.get() == self.default_message or not self.dir_var.get():
+            messagebox.showwarning('Warning', 'Please select project directory')
+            return
         preset_data = get_json_data(preset_name)
-        root.destroy()
-        return preset_data
+        self.preset_data = preset_data
+
+        self.root.destroy()
 
 
 if __name__ == '__main__':

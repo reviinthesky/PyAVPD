@@ -60,7 +60,6 @@ def make_label(master: tk.Frame, text: str, **kwargs) -> tk.Label:
         fg=COLORS['text_secondary'],
         bg=COLORS['bg_frame'],
         font=('Arial', 10),
-        text=text
     )
     label.grid(**kwargs)
     return label

@@ -11,8 +11,8 @@ echo pip packages directory: %PIP_PACKAGES%
 
 cd "%PROJECT_DIR%"
 "%PYTHON_DIR%/python.exe" -m venv venv
-call venv/Scripts/Activate
-if not "%PIP_PACKAGES%" == ""(
+call venv\Scripts\activate.bat
+if not "%PIP_PACKAGES%" == "" (
     echo requirements.txt path exists, installing packages...
     python -m pip install -r "%PIP_PACKAGES%"
     color 2
@@ -22,11 +22,12 @@ if not "%PIP_PACKAGES%" == ""(
     echo no packages passed, skipping...
 )
 call deactivate
+timeout /t 10
 
 :process_configs
 if "%4"=="" goto configs_done
 if "%5"=="" goto invalid_args
-
+timeout /t 10
 set CONFIG_FILE=%4
 set CONFIG_CONTENT=%5
 
@@ -35,11 +36,13 @@ echo %CONFIG_CONTENT% > %CONFIG_FILE%
 
 shift
 shift
+timeout /t 10
 goto process_configs
 
 :invalid_args
 color 4
 echo ERROR: Invalid config args - missing content for file %CONFIG_FILE%
+timeout /t 120
 exit /b 1
 
 :configs_done
@@ -47,6 +50,5 @@ color 2
 echo All configs files created successfully
 echo Setup completed. 
 start "" "%PROJECT_DIR%"
-exit /b 0
-
+timeout /t 120
 
