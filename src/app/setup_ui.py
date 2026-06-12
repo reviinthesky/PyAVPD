@@ -1,72 +1,18 @@
 import json
 import tkinter as tk
-from tkinter import filedialog
 from tkinter import messagebox
 from typing import Any
 from pathlib import Path
-
-COLORS = {
-    'bg_main': '#0E0E0E',
-    'bg_frame': '#1A1A1A',
-    'bg_entry': '#2D2D2D',
-    'text_primary': '#E0E0E0',
-    'text_secondary': '#A0A0A0',
-    'accent': '#5D8BF4',
-    'button_normal': '#3A3A3A',
-    'button_hover': '#4A4A4A',
-    'listbox_bg': '#252525',
-    'entry_hl': '#404040'
-}
+from .ui_cutsom import *
 
 
-class SetupApp():
+class SetupApp(AbstractUI):
     def __init__(self, root: tk.Tk | tk.Toplevel) -> None:
+        super().__init__(root, 'Select Python directory', 'Select python folder')
         self.config_files_presets: dict[str, str] = {}
-        self.root = root
-        self.root.configure(bg=COLORS['bg_main'])
-        main_frame = tk.Frame(
-            self.root,
-            bg=COLORS['bg_main'])
-        main_frame.pack(fill='both', expand=1, pady=20, padx=20)
-
-        # ________ presets browser for edit ________
-        # ________find python folder________
-        find_dir_frame = tk.Frame(
-            main_frame,
-            bg=COLORS['bg_frame'],
-            bd=1, relief='solid'
-        )
-        find_dir_frame.grid(row=0, sticky='ew', pady=(0, 20))
-        find_dir_frame.columnconfigure(0, weight=1)
-
-        self.dir_var = tk.StringVar(value='Python folder not selected')
-        dir_label = tk.Label(
-            find_dir_frame,
-            textvariable=self.dir_var,
-            justify='left',
-            fg=COLORS['text_primary'],
-            bg=COLORS['bg_entry'],
-            padx=10,
-            pady=8,
-            font=('Arial', 10))
-
-        dir_label.grid(
-            column=0, row=0,
-            sticky='ew', padx=10, pady=10)
-
-        browse_button = self.create_styled_button(
-            find_dir_frame,
-            text='Select python folder',
-            command=self.browse_folders)
-        browse_button.grid(
-            row=0,
-            column=1,
-            padx=(5, 10))
 
         # ________make pip list________
-        entry_frame = tk.Frame(
-            main_frame, bg=COLORS['bg_frame'], bd=1, relief='solid')
-        entry_frame.grid(row=1, sticky='ew', pady=(0, 20))
+        entry_frame = make_frame(self.main_frame, row=1)
         entry_frame.columnconfigure(0, weight=1)
 
         self.package_entry = tk.Entry(
@@ -83,12 +29,11 @@ class SetupApp():
             row=0, column=0, padx=(10, 5), pady=10, sticky='ew')
         self.package_entry.bind('<Return>', self.add_to_listbox)
 
-        add_button = self.create_styled_button(
+        add_button = make_button(
             entry_frame,
             text='Add package',
-            command=self.add_to_listbox
-        )
-        add_button.grid(row=0, column=1, padx=(5, 10))
+            command=self.add_to_listbox,
+            row=0, column=1, padx=(5, 10))
 
         self.package_list = tk.Listbox(
             entry_frame,
@@ -104,28 +49,22 @@ class SetupApp():
         self.package_list.grid(
             row=2, column=0, columnspan=2, padx=10, pady=(0, 10), sticky='ew')
 
-        remove_button = self.create_styled_button(
+        remove_button = make_button(
             entry_frame,
             text='Remove packages',
-            command=self.delete_from_listbox
-        )
-        remove_button.grid(row=3, column=0, columnspan=2, pady=(0, 10))
+            command=self.delete_from_listbox,
+            row=3, column=0, columnspan=2, pady=(0, 10))
 
         # ________config files________
-        config_files_frame = tk.Frame(
-            main_frame, bg=COLORS['bg_frame'], bd=1, relief='solid'
-        )
-        config_files_frame.grid(row=2, sticky='ew', pady=(0, 20))
+        config_files_frame = make_frame(self.main_frame, row=2)
         config_files_frame.columnconfigure(1, weight=1)
 
-        config_file_name_label = tk.Label(
+        config_file_name_label = make_label(
             config_files_frame,
             text='Enter config file name:',
-            fg=COLORS['text_secondary'],
-            bg=COLORS['bg_frame'],
-            font=('Arial', 10))
-        config_file_name_label.grid(
             row=0, column=0, padx=(10, 5), pady=10, sticky='w')
+        config_file_name_label.grid(
+        )
 
         self.config_file_name_entry = tk.Entry(
             config_files_frame,
@@ -141,13 +80,9 @@ class SetupApp():
             row=0, column=1, padx=(0, 10), pady=10, sticky='ew'
         )
 
-        config_file_content_label = tk.Label(
+        config_file_content_label = make_label(
             config_files_frame,
             text='Enter config file content:',
-            fg=COLORS['text_secondary'],
-            bg=COLORS['bg_frame'],
-            font=('Arial', 10))
-        config_file_content_label.grid(
             row=1, column=0, padx=(10, 5), pady=(0, 5), sticky='nw')
 
         self.config_file_content_entry = tk.Text(
@@ -164,14 +99,9 @@ class SetupApp():
         self.config_file_content_entry.grid(
             row=1, column=1, padx=(0, 10), pady=(0, 10), sticky='ew')
 
-        config_files_listbox_label = tk.Label(
+        config_files_listbox_label = make_label(
             config_files_frame,
             text='Config files list:',
-            fg=COLORS['text_secondary'],
-            bg=COLORS['bg_frame'],
-            font=('Arial', 10)
-        )
-        config_files_listbox_label.grid(
             row=0, column=2, padx=(20, 10), pady=(10, 5), sticky='w'
         )
 
@@ -192,18 +122,14 @@ class SetupApp():
         )
         self.config_files_listbox.bind(
             '<<ListboxSelect>>', self.choose_config_file_content)
-        save_config_button = self.create_styled_button(
+        save_config_button = make_button(
             config_files_frame,
             text='Save config file',
-            command=self.save_config_file
-        )
-        save_config_button.grid(
+            command=self.save_config_file,
             row=2, column=0, columnspan=2, pady=(0, 10))
 
         # ________save preset________
-        save_preset_frame = tk.Frame(
-            main_frame, bg=COLORS['bg_frame'], bd=1, relief='solid')
-        save_preset_frame.grid(row=3, sticky='ew')
+        save_preset_frame = make_frame(self.main_frame, row=3)
         save_preset_frame.columnconfigure(1, weight=1)
         preset_name_label = tk.Label(
             save_preset_frame,
@@ -227,12 +153,11 @@ class SetupApp():
         self.preset_name.grid(
             row=0, column=1, padx=(0, 10), pady=10, sticky='ew')
 
-        save_button = self.create_styled_button(
+        save_button = make_button(
             save_preset_frame,
             text='Save preset',
-            command=self.save_preset
-        )
-        save_button.grid(row=1, column=0, columnspan=2, pady=(0, 10))
+            command=self.save_preset,
+            row=1, column=0, columnspan=2, pady=(0, 10))
 
     def choose_config_file_content(self, event=None) -> None:
         file_name: str = self.config_files_listbox.get('anchor')
@@ -241,32 +166,6 @@ class SetupApp():
         self.config_file_content_entry.insert(1.0, file_content)
         self.config_file_name_entry.delete(0, 'end')
         self.config_file_name_entry.insert(0, file_name)
-
-    @staticmethod
-    def create_styled_button(
-            parent: tk.Frame, text: str,
-            command) -> tk.Button:
-        btn = tk.Button(
-            parent,
-            text=text,
-            command=command,
-            bg=COLORS['button_normal'],
-            fg=COLORS['text_primary'],
-            activebackground=COLORS['button_hover'],
-            activeforeground=COLORS['text_primary'],
-            relief='flat',
-            padx=15,
-            pady=8,
-            font=('Arial', 10, 'bold'),
-            cursor='hand2'
-        )
-        # Эффект наведения
-        btn.bind('<Enter>', lambda e: btn.config(
-            bg=COLORS['button_hover']))
-        btn.bind('<Leave>', lambda e: btn.config(
-            bg=COLORS['button_normal']))
-
-        return btn
 
     def save_config_file(self) -> None:
         config_file_name = self.config_file_name_entry.get()
@@ -323,14 +222,6 @@ class SetupApp():
         if package_name:
             self.package_list.insert('end', package_name)
             self.package_entry.delete(0, 'end')
-
-    def browse_folders(self) -> None:
-        dir_path = filedialog.askdirectory(
-            title='Select folder',
-            initialdir='/'
-        )
-        if dir_path:
-            self.dir_var.set(dir_path)
 
     def run(self):
         self.root.mainloop()
