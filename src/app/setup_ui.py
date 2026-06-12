@@ -108,10 +108,71 @@ class SetupApp():
         )
         remove_button.grid(row=3, column=0, columnspan=2, pady=(0, 10))
 
+        # config files
+        config_files_frame = tk.Frame(
+            main_frame, bg=self.colors['bg_frame'], bd=1, relief='solid'
+        )
+        config_files_frame.grid(row=2, sticky='ew', pady=(0, 20))
+        config_files_frame.columnconfigure(1, weight=1)
+
+        config_file_name_label = tk.Label(
+            config_files_frame,
+            text='Enter config file name:',
+            fg=self.colors['text_secondary'],
+            bg=self.colors['bg_frame'],
+            font=('Arial', 10))
+        config_file_name_label.grid(
+            row=0, column=0, padx=(10, 5), pady=10, sticky='w')
+
+        config_file_name_entry = tk.Entry(
+            config_files_frame,
+            bg=self.colors['bg_entry'],
+            fg=self.colors['text_primary'],
+            insertbackground=self.colors['text_primary'],
+            font=('Arial', 11),
+            relief='flat',
+            highlightthickness=1,
+            highlightbackground=self.colors['entry_hl']
+        )
+        config_file_name_entry.grid(
+            row=0, column=1, padx=(0, 10), pady=10, sticky='ew'
+        )
+
+        config_file_content_label = tk.Label(
+            config_files_frame,
+            text='Enter config file content:',
+            fg=self.colors['text_secondary'],
+            bg=self.colors['bg_frame'],
+            font=('Arial', 10))
+        config_file_content_label.grid(
+            row=1, column=0, padx=(10, 5), pady=(0, 5), sticky='nw')
+
+        config_file_content_entry = tk.Text(
+            config_files_frame,
+            bg=self.colors['bg_entry'],
+            fg=self.colors['text_primary'],
+            insertbackground=self.colors['text_primary'],
+            font=('Arial', 10),
+            relief='flat',
+            highlightthickness=1,
+            highlightbackground='#404040',
+            wrap='word',
+            height=6)
+        config_file_content_entry.grid(
+            row=1, column=1, padx=(0, 10), pady=(0, 10), sticky='ew')
+
+        save_config_button = self.create_styled_button(
+            config_files_frame,
+            text='Save config file',
+            command=self.save_config_file
+        )
+        save_config_button.grid(
+            row=2, column=0, columnspan=2, pady=(0, 10))
+
         # save preset
         save_preset_frame = tk.Frame(
             main_frame, bg=self.colors['bg_frame'], bd=1, relief='solid')
-        save_preset_frame.grid(row=2, sticky='ew')
+        save_preset_frame.grid(row=3, sticky='ew')
         save_preset_frame.columnconfigure(1, weight=1)
         preset_name_label = tk.Label(
             save_preset_frame,
@@ -167,7 +228,10 @@ class SetupApp():
 
         return btn
 
-    def save_preset(self):
+    def save_config_file(self) -> None:
+        pass
+
+    def save_preset(self) -> None:
         preset_name = self.preset_name.get()
         if not preset_name:
             messagebox.showwarning(
@@ -196,14 +260,14 @@ class SetupApp():
         with open('presets/presets.json', 'a', encoding='UTF-8') as file:
             json.dump(preset_values, file, indent=2)
 
-    def delete_from_listbox(self):
+    def delete_from_listbox(self) -> None:
         selection = self.package_list.curselection()
         if not selection:
             return
         for selected_i in reversed(selection):
             self.package_list.delete(selected_i)
 
-    def add_to_listbox(self, event=None):
+    def add_to_listbox(self, event=None) -> None:
         package_name = self.package_entry.get()
         if package_name:
             self.package_list.insert('end', package_name)
@@ -221,7 +285,7 @@ class SetupApp():
 if __name__ == '__main__':
     root = tk.Tk()
     root.title('Setup Preset')
-    root.geometry('600x600')
+    root.geometry('900x900')
     root.resizable(False, False)
     app = SetupApp(root)
     root.mainloop()
