@@ -20,6 +20,7 @@ class SetupApp():
             'listbox_bg': '#252525',
             'entry_hl': '#404040'
         }
+        self.config_files_presets: dict[str, str] = {}
         self.root = root
         self.root.configure(bg=self.colors['bg_main'])
         main_frame = tk.Frame(
@@ -27,7 +28,7 @@ class SetupApp():
             bg=self.colors['bg_main'])
         main_frame.pack(fill='both', expand=1, pady=20, padx=20)
 
-        # find python folder
+        # ________find python folder________
         find_dir_frame = tk.Frame(
             main_frame,
             bg=self.colors['bg_frame'],
@@ -60,7 +61,7 @@ class SetupApp():
             column=1,
             padx=(5, 10))
 
-        # make pip list
+        # ________make pip list________
         entry_frame = tk.Frame(
             main_frame, bg=self.colors['bg_frame'], bd=1, relief='solid')
         entry_frame.grid(row=1, sticky='ew', pady=(0, 20))
@@ -108,7 +109,7 @@ class SetupApp():
         )
         remove_button.grid(row=3, column=0, columnspan=2, pady=(0, 10))
 
-        # config files
+        # ________config files________
         config_files_frame = tk.Frame(
             main_frame, bg=self.colors['bg_frame'], bd=1, relief='solid'
         )
@@ -124,7 +125,7 @@ class SetupApp():
         config_file_name_label.grid(
             row=0, column=0, padx=(10, 5), pady=10, sticky='w')
 
-        config_file_name_entry = tk.Entry(
+        self.config_file_name_entry = tk.Entry(
             config_files_frame,
             bg=self.colors['bg_entry'],
             fg=self.colors['text_primary'],
@@ -134,7 +135,7 @@ class SetupApp():
             highlightthickness=1,
             highlightbackground=self.colors['entry_hl']
         )
-        config_file_name_entry.grid(
+        self.config_file_name_entry.grid(
             row=0, column=1, padx=(0, 10), pady=10, sticky='ew'
         )
 
@@ -147,7 +148,7 @@ class SetupApp():
         config_file_content_label.grid(
             row=1, column=0, padx=(10, 5), pady=(0, 5), sticky='nw')
 
-        config_file_content_entry = tk.Text(
+        self.config_file_content_entry = tk.Text(
             config_files_frame,
             bg=self.colors['bg_entry'],
             fg=self.colors['text_primary'],
@@ -158,9 +159,37 @@ class SetupApp():
             highlightbackground='#404040',
             wrap='word',
             height=6)
-        config_file_content_entry.grid(
+        self.config_file_content_entry.grid(
             row=1, column=1, padx=(0, 10), pady=(0, 10), sticky='ew')
 
+        config_files_listbox_label = tk.Label(
+            config_files_frame,
+            text='Config files list:',
+            fg=self.colors['text_secondary'],
+            bg=self.colors['bg_frame'],
+            font=('Arial', 10)
+        )
+        config_files_listbox_label.grid(
+            row=0, column=2, padx=(20, 10), pady=(10, 5), sticky='w'
+        )
+
+        self.config_files_listbox = tk.Listbox(
+            config_files_frame,
+            bg=self.colors['listbox_bg'],
+            fg=self.colors['text_primary'],
+            selectbackground=self.colors['accent'],
+            selectforeground='white',
+            font=('Arial', 10),
+            relief='flat',
+            highlightthickness=0,
+            height=12,
+            width=25,
+            selectmode='single')
+        self.config_files_listbox.grid(
+            row=1, column=2, rowspan=2, padx=(20, 10), pady=10, sticky='ns'
+        )
+        self.config_files_listbox.bind(
+            '<<ListboxSelect>>', self.choose_config_file_content)
         save_config_button = self.create_styled_button(
             config_files_frame,
             text='Save config file',
@@ -169,7 +198,7 @@ class SetupApp():
         save_config_button.grid(
             row=2, column=0, columnspan=2, pady=(0, 10))
 
-        # save preset
+        # ________save preset________
         save_preset_frame = tk.Frame(
             main_frame, bg=self.colors['bg_frame'], bd=1, relief='solid')
         save_preset_frame.grid(row=3, sticky='ew')
@@ -203,6 +232,14 @@ class SetupApp():
         )
         save_button.grid(row=1, column=0, columnspan=2, pady=(0, 10))
 
+    def choose_config_file_content(self, event=None) -> None:
+        file_name: str = self.config_files_listbox.get('anchor')
+        file_content: str = self.config_files_presets[file_name]
+        self.config_file_content_entry.delete(1.0, 'end')
+        self.config_file_content_entry.insert(1.0, file_content)
+        self.config_file_name_entry.delete(0, 'end')
+        self.config_file_name_entry.insert(0, file_name)
+
     def create_styled_button(
             self, parent: tk.Frame, text: str,
             command) -> tk.Button:
@@ -229,7 +266,17 @@ class SetupApp():
         return btn
 
     def save_config_file(self) -> None:
-        pass
+        config_file_name = self.config_file_name_entry.get()
+        if not config_file_name:
+            messagebox.showwarning(
+                'Warning',
+                'Config file name is required')
+            return
+        config_content = self.config_file_content_entry.get(1.0, 'end-1c')
+        self.config_files_presets[config_file_name] = config_content
+        self.config_files_listbox.insert('end', config_file_name)
+        self.config_file_name_entry.delete(0, 'end')
+        self.config_file_content_entry.delete(1.0, 'end')
 
     def save_preset(self) -> None:
         preset_name = self.preset_name.get()
@@ -254,7 +301,8 @@ class SetupApp():
         preset_values: dict[str, Any] = {  # type: ignore
             f'{preset_name}': {
                 'python_dir': python_dir,
-                'pip_packages': pip_packages
+                'pip_packages': pip_packages,
+                'config_files': self.config_files_presets
             }
         }
         with open('presets/presets.json', 'a', encoding='UTF-8') as file:
@@ -285,7 +333,7 @@ class SetupApp():
 if __name__ == '__main__':
     root = tk.Tk()
     root.title('Setup Preset')
-    root.geometry('900x900')
+    root.geometry('1080x900')
     root.resizable(False, False)
     app = SetupApp(root)
     root.mainloop()
