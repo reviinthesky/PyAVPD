@@ -1,6 +1,8 @@
+from time import sleep
+
 from .main_ui import MainWindow
 import tkinter as tk
-from .commands import run_bat
+from .commands import run_bat, temp_dir
 import os
 root = tk.Tk()
 root.title('PyAVPD')
@@ -15,3 +17,8 @@ except AttributeError:
 
 project_dir = app.dir_var.get()
 run_bat(project_dir, data)
+sleep(10)
+try:
+    os.remove(temp_dir)
+except Exception:
+    pass
