@@ -2,3 +2,4 @@
 venv/
 mypy.ini
 .flake8
+__pycache__/
