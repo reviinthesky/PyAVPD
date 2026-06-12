@@ -10,7 +10,7 @@ class SetupApp(ParentUI):
     def __init__(
             self, root: tk.Tk | tk.Toplevel,
             preset_data: dict[str, Any] | None = None) -> None:
-        super().__init__(root, 'Select Python directory', 'Select python folder')
+        super().__init__(root, 'Select Python directory')
         self.config_files_presets: dict[str, str] = {}
         self.preset_data = preset_data
 
@@ -161,7 +161,7 @@ class SetupApp(ParentUI):
         self.load_preset_data()
 
     def load_preset_data(self) -> None:
-        if not self.preset_data:
+        if self.preset_data is None:
             return
 
         preset_name, preset_values = next(iter(self.preset_data.items()))

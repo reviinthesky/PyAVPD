@@ -17,11 +17,13 @@ COLORS = {
 
 def make_frame(
         master: tk.Frame | tk.Tk,
+        sticky='ew',
+        pady=(0, 20),
         **kwargs) -> tk.Frame:
     frame = tk.Frame(
         master, bd=1, relief='solid',
         bg=COLORS['bg_frame'])
-    frame.grid(sticky='ew', pady=(0, 20), **kwargs)
+    frame.grid(sticky=sticky, pady=pady, **kwargs)
     return frame
 
 
@@ -57,7 +59,8 @@ def make_label(master: tk.Frame, text: str, **kwargs) -> tk.Label:
         master,
         fg=COLORS['text_secondary'],
         bg=COLORS['bg_frame'],
-        font=('Arial', 10)
+        font=('Arial', 10),
+        text=text
     )
     label.grid(**kwargs)
     return label
@@ -66,18 +69,18 @@ def make_label(master: tk.Frame, text: str, **kwargs) -> tk.Label:
 class ParentUI:
     def __init__(
             self, root: tk.Tk | tk.Toplevel, dir_var_text: str,
-            browse_button_text: str) -> None:
+            browse_button_text: str = 'Browse folders') -> None:
         self.root = root
         self.root.configure(bg=COLORS['bg_main'])
         self.main_frame = tk.Frame(self.root, bg=COLORS['bg_main'])
         self.main_frame.pack(fill='both', expand=1, pady=20, padx=20)
 
-        find_dir_frame = make_frame(self.main_frame, row=0)
-        find_dir_frame.columnconfigure(0, weight=1)
+        self.find_dir_frame = make_frame(self.main_frame, row=0)
+        self.find_dir_frame.columnconfigure(0, weight=1)
 
         self.dir_var = tk.StringVar(value=dir_var_text)
         dir_label = tk.Label(
-            find_dir_frame,
+            self.find_dir_frame,
             textvariable=self.dir_var,
             justify='left',
             fg=COLORS['text_primary'],
@@ -90,7 +93,7 @@ class ParentUI:
             column=0, row=0,
             sticky='ew', padx=10, pady=10)
         browse_button = make_button(
-            find_dir_frame,
+            self.find_dir_frame,
             text=browse_button_text,
             command=self.browse_folders,
             row=0,
