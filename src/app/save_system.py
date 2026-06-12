@@ -1,5 +1,5 @@
 import json
-from .path import get_base_path
+from src.app.path import get_base_path
 from pathlib import Path
 
 

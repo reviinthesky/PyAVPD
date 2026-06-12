@@ -5,3 +5,7 @@ mypy.ini
 __pycache__/
 temp/
 presets/
+dist/
+*.pyc
+*.spec
+build/

@@ -1,8 +1,8 @@
 from time import sleep
 
-from .main_ui import MainWindow
+from src.app.main_ui import MainWindow
 import tkinter as tk
-from .commands import run_bat, temp_dir
+from src.app.commands import run_bat, temp_dir
 import os
 root = tk.Tk()
 root.title('PyAVPD')

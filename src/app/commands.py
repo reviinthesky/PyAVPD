@@ -2,9 +2,9 @@ import subprocess
 
 from pathlib import Path
 from typing import Any
-from .path import get_base_path
-temp_dir = get_base_path('temp\\requirements.txt')
-bat_dir = Path('src/app/deploy.bat')
+from src.app.path import get_base_path
+temp_dir = Path(get_base_path('temp')) / 'requirements.txt'
+bat_dir = Path(get_base_path('src/app/deploy.bat'))
 
 
 def make_temp_requirements_file(data: dict[str, Any]):
@@ -27,7 +27,7 @@ def run_bat(project_dir: str, preset_data: dict[str, dict]):
     requirements_dir = temp_dir if Path(temp_dir).exists() else ''
     args: list[str] = [
         str(bat_dir), project_dir,
-        python_dir, requirements_dir]
+        python_dir, str(requirements_dir)]
     subprocess.Popen(
         args, text=True,
         creationflags=subprocess.CREATE_NEW_CONSOLE)

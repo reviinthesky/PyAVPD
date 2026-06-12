@@ -1,8 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox
-from .ui_custom import *
-from .save_system import get_json_data, get_all_preset_keys
-from .setup_ui import SetupApp
+from src.app.ui_custom import *
+from src.app.save_system import get_json_data, get_all_preset_keys
+from src.app.setup_ui import SetupApp
 
 
 class MainWindow(ParentUI):

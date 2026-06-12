@@ -2,8 +2,8 @@ import tkinter as tk
 from tkinter import messagebox
 from typing import Any
 from pathlib import Path
-from .ui_custom import *
-from .save_system import save_json
+from src.app.ui_custom import *
+from src.app.save_system import save_json
 
 
 class SetupApp(ParentUI):
