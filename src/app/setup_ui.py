@@ -1,17 +1,20 @@
-import json
 import tkinter as tk
 from tkinter import messagebox
 from typing import Any
 from pathlib import Path
-from .ui_cutsom import *
+from .ui_custom import *
+from .save_system import save_json
 
 
-class SetupApp(AbstractUI):
-    def __init__(self, root: tk.Tk | tk.Toplevel) -> None:
+class SetupApp(ParentUI):
+    def __init__(
+            self, root: tk.Tk | tk.Toplevel,
+            preset_data: dict[str, Any] | None = None) -> None:
         super().__init__(root, 'Select Python directory', 'Select python folder')
         self.config_files_presets: dict[str, str] = {}
+        self.preset_data = preset_data
 
-        # ________make pip list________
+        # ________ pip list ________
         entry_frame = make_frame(self.main_frame, row=1)
         entry_frame.columnconfigure(0, weight=1)
 
@@ -131,13 +134,9 @@ class SetupApp(AbstractUI):
         # ________save preset________
         save_preset_frame = make_frame(self.main_frame, row=3)
         save_preset_frame.columnconfigure(1, weight=1)
-        preset_name_label = tk.Label(
+        preset_name_label = make_label(
             save_preset_frame,
             text='Enter preset name:',
-            fg=COLORS['text_secondary'],
-            bg=COLORS['bg_frame'],
-            font=('Arial', 10))
-        preset_name_label.grid(
             row=0, column=0, padx=(10, 5), pady=10, sticky='w')
 
         self.preset_name = tk.Entry(
@@ -158,6 +157,29 @@ class SetupApp(AbstractUI):
             text='Save preset',
             command=self.save_preset,
             row=1, column=0, columnspan=2, pady=(0, 10))
+
+        self.load_preset_data()
+
+    def load_preset_data(self) -> None:
+        if not self.preset_data:
+            return
+
+        preset_name, preset_values = next(iter(self.preset_data.items()))
+
+        self.dir_var.set(preset_values['python_dir'])
+        if preset_values['pip_packages']:
+            self.package_list.delete(0, 'end')
+            for package in preset_values['pip_packages']:
+                self.package_list.insert('end', package)
+
+        if preset_values['config_files']:
+            self.config_files_presets = preset_values['config_files'].copy()
+            self.config_files_listbox.delete(0, 'end')
+            for file_name in self.config_files_presets.keys():
+                self.config_files_listbox.insert('end', file_name)
+
+        self.preset_name.delete(0, 'end')
+        self.preset_name.insert(0, preset_name)
 
     def choose_config_file_content(self, event=None) -> None:
         file_name: str = self.config_files_listbox.get('anchor')
@@ -186,12 +208,14 @@ class SetupApp(AbstractUI):
             messagebox.showwarning(
                 title='Warning', message='Preset name is required')
             return
+
         python_dir = self.dir_var.get()
         if not python_dir:
             messagebox.showwarning(
                 title='Warning',
                 message='Python directory is required')
             return
+
         python_exe = Path(python_dir + '/python.exe')
         if not python_exe.is_file():
             messagebox.showwarning(
@@ -199,16 +223,15 @@ class SetupApp(AbstractUI):
                 message='Invalid python directory\n python.exe is not found'
             )
             return
+
         pip_packages = self.package_list.get(0, 'end')
         preset_values: dict[str, Any] = {  # type: ignore
             f'{preset_name}': {
                 'python_dir': python_dir,
                 'pip_packages': pip_packages,
                 'config_files': self.config_files_presets
-            }
-        }
-        with open('presets/presets.json', 'a', encoding='UTF-8') as file:
-            json.dump(preset_values, file, indent=2)
+            }}
+        save_json(preset_values)
 
     def delete_from_listbox(self) -> None:
         selection = self.package_list.curselection()
@@ -223,7 +246,7 @@ class SetupApp(AbstractUI):
             self.package_list.insert('end', package_name)
             self.package_entry.delete(0, 'end')
 
-    def run(self):
+    def run(self) -> None:
         self.root.mainloop()
 
 

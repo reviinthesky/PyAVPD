@@ -63,7 +63,7 @@ def make_label(master: tk.Frame, text: str, **kwargs) -> tk.Label:
     return label
 
 
-class AbstractUI:
+class ParentUI:
     def __init__(
             self, root: tk.Tk | tk.Toplevel, dir_var_text: str,
             browse_button_text: str) -> None:
