@@ -11,7 +11,7 @@ class SetupApp():
         self.root = root
         main_frame = tk.Frame(
             self.root,
-            bg='#121212')
+            bg="#0E0E0E")
         main_frame.pack(fill='both', expand=1)
 
         # find python folder

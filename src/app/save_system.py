@@ -28,3 +28,7 @@ class SaveSystem:
             result_data = {}
 
         return result_data
+
+    def get_required_key(self, key) -> dict:
+        data = self.get_json_data()
+        return data.get(key, {})
