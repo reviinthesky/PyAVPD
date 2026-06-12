@@ -5,33 +5,34 @@ from tkinter import messagebox
 from typing import Any
 from pathlib import Path
 
+COLORS = {
+    'bg_main': '#0E0E0E',
+    'bg_frame': '#1A1A1A',
+    'bg_entry': '#2D2D2D',
+    'text_primary': '#E0E0E0',
+    'text_secondary': '#A0A0A0',
+    'accent': '#5D8BF4',
+    'button_normal': '#3A3A3A',
+    'button_hover': '#4A4A4A',
+    'listbox_bg': '#252525',
+    'entry_hl': '#404040'
+}
+
 
 class SetupApp():
-    def __init__(self, root: tk.Tk) -> None:
-        self.colors = {
-            'bg_main': '#0E0E0E',
-            'bg_frame': '#1A1A1A',
-            'bg_entry': '#2D2D2D',
-            'text_primary': '#E0E0E0',
-            'text_secondary': '#A0A0A0',
-            'accent': '#5D8BF4',
-            'button_normal': '#3A3A3A',
-            'button_hover': '#4A4A4A',
-            'listbox_bg': '#252525',
-            'entry_hl': '#404040'
-        }
+    def __init__(self, root: tk.Tk | tk.Toplevel) -> None:
         self.config_files_presets: dict[str, str] = {}
         self.root = root
-        self.root.configure(bg=self.colors['bg_main'])
+        self.root.configure(bg=COLORS['bg_main'])
         main_frame = tk.Frame(
             self.root,
-            bg=self.colors['bg_main'])
+            bg=COLORS['bg_main'])
         main_frame.pack(fill='both', expand=1, pady=20, padx=20)
 
         # ________find python folder________
         find_dir_frame = tk.Frame(
             main_frame,
-            bg=self.colors['bg_frame'],
+            bg=COLORS['bg_frame'],
             bd=1, relief='solid'
         )
         find_dir_frame.grid(row=0, sticky='ew', pady=(0, 20))
@@ -42,8 +43,8 @@ class SetupApp():
             find_dir_frame,
             textvariable=self.dir_var,
             justify='left',
-            fg=self.colors['text_primary'],
-            bg=self.colors['bg_entry'],
+            fg=COLORS['text_primary'],
+            bg=COLORS['bg_entry'],
             padx=10,
             pady=8,
             font=('Arial', 10))
@@ -63,20 +64,20 @@ class SetupApp():
 
         # ________make pip list________
         entry_frame = tk.Frame(
-            main_frame, bg=self.colors['bg_frame'], bd=1, relief='solid')
+            main_frame, bg=COLORS['bg_frame'], bd=1, relief='solid')
         entry_frame.grid(row=1, sticky='ew', pady=(0, 20))
         entry_frame.columnconfigure(0, weight=1)
 
         self.package_entry = tk.Entry(
             entry_frame,
-            bg=self.colors['bg_entry'],
-            fg=self.colors['text_primary'],
-            insertbackground=self.colors['text_primary'],
+            bg=COLORS['bg_entry'],
+            fg=COLORS['text_primary'],
+            insertbackground=COLORS['text_primary'],
             width=30,
             font=('Arial', 11),
             relief='flat',
             highlightthickness=1,
-            highlightbackground=self.colors['entry_hl'])
+            highlightbackground=COLORS['entry_hl'])
         self.package_entry.grid(
             row=0, column=0, padx=(10, 5), pady=10, sticky='ew')
         self.package_entry.bind('<Return>', self.add_to_listbox)
@@ -91,9 +92,9 @@ class SetupApp():
         self.package_list = tk.Listbox(
             entry_frame,
             selectmode='multiple',
-            bg=self.colors['listbox_bg'],
-            fg=self.colors['text_primary'],
-            selectbackground=self.colors['accent'],
+            bg=COLORS['listbox_bg'],
+            fg=COLORS['text_primary'],
+            selectbackground=COLORS['accent'],
             selectforeground='white',
             font=('Arial', 10),
             relief='flat',
@@ -111,7 +112,7 @@ class SetupApp():
 
         # ________config files________
         config_files_frame = tk.Frame(
-            main_frame, bg=self.colors['bg_frame'], bd=1, relief='solid'
+            main_frame, bg=COLORS['bg_frame'], bd=1, relief='solid'
         )
         config_files_frame.grid(row=2, sticky='ew', pady=(0, 20))
         config_files_frame.columnconfigure(1, weight=1)
@@ -119,21 +120,21 @@ class SetupApp():
         config_file_name_label = tk.Label(
             config_files_frame,
             text='Enter config file name:',
-            fg=self.colors['text_secondary'],
-            bg=self.colors['bg_frame'],
+            fg=COLORS['text_secondary'],
+            bg=COLORS['bg_frame'],
             font=('Arial', 10))
         config_file_name_label.grid(
             row=0, column=0, padx=(10, 5), pady=10, sticky='w')
 
         self.config_file_name_entry = tk.Entry(
             config_files_frame,
-            bg=self.colors['bg_entry'],
-            fg=self.colors['text_primary'],
-            insertbackground=self.colors['text_primary'],
+            bg=COLORS['bg_entry'],
+            fg=COLORS['text_primary'],
+            insertbackground=COLORS['text_primary'],
             font=('Arial', 11),
             relief='flat',
             highlightthickness=1,
-            highlightbackground=self.colors['entry_hl']
+            highlightbackground=COLORS['entry_hl']
         )
         self.config_file_name_entry.grid(
             row=0, column=1, padx=(0, 10), pady=10, sticky='ew'
@@ -142,17 +143,17 @@ class SetupApp():
         config_file_content_label = tk.Label(
             config_files_frame,
             text='Enter config file content:',
-            fg=self.colors['text_secondary'],
-            bg=self.colors['bg_frame'],
+            fg=COLORS['text_secondary'],
+            bg=COLORS['bg_frame'],
             font=('Arial', 10))
         config_file_content_label.grid(
             row=1, column=0, padx=(10, 5), pady=(0, 5), sticky='nw')
 
         self.config_file_content_entry = tk.Text(
             config_files_frame,
-            bg=self.colors['bg_entry'],
-            fg=self.colors['text_primary'],
-            insertbackground=self.colors['text_primary'],
+            bg=COLORS['bg_entry'],
+            fg=COLORS['text_primary'],
+            insertbackground=COLORS['text_primary'],
             font=('Arial', 10),
             relief='flat',
             highlightthickness=1,
@@ -165,8 +166,8 @@ class SetupApp():
         config_files_listbox_label = tk.Label(
             config_files_frame,
             text='Config files list:',
-            fg=self.colors['text_secondary'],
-            bg=self.colors['bg_frame'],
+            fg=COLORS['text_secondary'],
+            bg=COLORS['bg_frame'],
             font=('Arial', 10)
         )
         config_files_listbox_label.grid(
@@ -175,9 +176,9 @@ class SetupApp():
 
         self.config_files_listbox = tk.Listbox(
             config_files_frame,
-            bg=self.colors['listbox_bg'],
-            fg=self.colors['text_primary'],
-            selectbackground=self.colors['accent'],
+            bg=COLORS['listbox_bg'],
+            fg=COLORS['text_primary'],
+            selectbackground=COLORS['accent'],
             selectforeground='white',
             font=('Arial', 10),
             relief='flat',
@@ -200,27 +201,27 @@ class SetupApp():
 
         # ________save preset________
         save_preset_frame = tk.Frame(
-            main_frame, bg=self.colors['bg_frame'], bd=1, relief='solid')
+            main_frame, bg=COLORS['bg_frame'], bd=1, relief='solid')
         save_preset_frame.grid(row=3, sticky='ew')
         save_preset_frame.columnconfigure(1, weight=1)
         preset_name_label = tk.Label(
             save_preset_frame,
             text='Enter preset name:',
-            fg=self.colors['text_secondary'],
-            bg=self.colors['bg_frame'],
+            fg=COLORS['text_secondary'],
+            bg=COLORS['bg_frame'],
             font=('Arial', 10))
         preset_name_label.grid(
             row=0, column=0, padx=(10, 5), pady=10, sticky='w')
 
         self.preset_name = tk.Entry(
             save_preset_frame,
-            bg=self.colors['bg_entry'],
-            fg=self.colors['text_primary'],
-            insertbackground=self.colors['text_primary'],
+            bg=COLORS['bg_entry'],
+            fg=COLORS['text_primary'],
+            insertbackground=COLORS['text_primary'],
             font=('Arial', 11),
             relief='flat',
             highlightthickness=1,
-            highlightbackground=self.colors['entry_hl']
+            highlightbackground=COLORS['entry_hl']
         )
         self.preset_name.grid(
             row=0, column=1, padx=(0, 10), pady=10, sticky='ew')
@@ -240,17 +241,18 @@ class SetupApp():
         self.config_file_name_entry.delete(0, 'end')
         self.config_file_name_entry.insert(0, file_name)
 
+    @staticmethod
     def create_styled_button(
-            self, parent: tk.Frame, text: str,
+            parent: tk.Frame, text: str,
             command) -> tk.Button:
         btn = tk.Button(
             parent,
             text=text,
             command=command,
-            bg=self.colors['button_normal'],
-            fg=self.colors['text_primary'],
-            activebackground=self.colors['button_hover'],
-            activeforeground=self.colors['text_primary'],
+            bg=COLORS['button_normal'],
+            fg=COLORS['text_primary'],
+            activebackground=COLORS['button_hover'],
+            activeforeground=COLORS['text_primary'],
             relief='flat',
             padx=15,
             pady=8,
@@ -259,9 +261,9 @@ class SetupApp():
         )
         # Эффект наведения
         btn.bind('<Enter>', lambda e: btn.config(
-            bg=self.colors['button_hover']))
+            bg=COLORS['button_hover']))
         btn.bind('<Leave>', lambda e: btn.config(
-            bg=self.colors['button_normal']))
+            bg=COLORS['button_normal']))
 
         return btn
 
@@ -328,6 +330,9 @@ class SetupApp():
         )
         if dir_path:
             self.dir_var.set(dir_path)
+
+    def run(self):
+        self.root.mainloop()
 
 
 if __name__ == '__main__':
