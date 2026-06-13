@@ -3,8 +3,8 @@ venv/
 mypy.ini
 .flake8
 __pycache__/
-temp/
-presets/
+temp/*.json
+presets/*.json
 dist/
 *.pyc
 *.spec
