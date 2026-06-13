@@ -60,9 +60,25 @@ def make_label(master: tk.Frame, text: str, **kwargs) -> tk.Label:
         fg=COLORS['text_secondary'],
         bg=COLORS['bg_frame'],
         font=('Arial', 10),
+        text=text
     )
     label.grid(**kwargs)
     return label
+
+
+def make_scrollbar(master: tk.Frame, command, **kwargs) -> tk.Scrollbar:
+    scrl = tk.Scrollbar(
+        master,
+        orient='vertical',
+        bg=COLORS['bg_frame'],
+        activebackground=COLORS['accent'],
+        troughcolor=COLORS['bg_entry'],
+        highlightthickness=0,
+        width=12
+    )
+    scrl.config(command=command)
+    scrl.grid(sticky='ns', **kwargs)
+    return scrl
 
 
 class ParentUI:

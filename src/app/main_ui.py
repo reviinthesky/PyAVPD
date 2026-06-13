@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 from src.app.ui_custom import *
-from src.app.save_system import get_json_data, get_all_preset_keys
+from src.app.save_system import get_json_data, get_all_preset_keys, delete_preset
 from src.app.setup_ui import SetupApp
 
 
@@ -13,7 +13,6 @@ class MainWindow(ParentUI):
         preset_browser_frame = make_frame(
             self.main_frame,
             row=1, column=0, rowspan=3, sticky='ns', padx=(0, 20), pady=0)
-        preset_browser_frame.rowconfigure(1, weight=1)
 
         preset_browser_label = make_label(
             preset_browser_frame,
@@ -30,6 +29,11 @@ class MainWindow(ParentUI):
             text='Edit preset',
             command=self.edit_selected_preset,
             row=0, column=1, padx=10, sticky='ew', pady=10)
+        delete_button = make_button(
+            preset_browser_frame,
+            text='Delete preset',
+            command=self.delete_selected_preset,
+            row=1, column=1, padx=10, sticky='ew', pady=10)
 
         self.presets_listbox = tk.Listbox(
             preset_browser_frame,
@@ -43,7 +47,11 @@ class MainWindow(ParentUI):
             width=25,
             height=15,
             selectmode='single')
-        self.presets_listbox.grid(row=2, column=0, padx=10, pady=10, sticky='nsew')
+        self.presets_listbox.grid(row=2, column=0, padx=(10, 0), pady=10, sticky='nsew')
+        presets_scrollbar = make_scrollbar(
+            preset_browser_frame, self.presets_listbox.yview,
+            row=2, column=1)
+        self.presets_listbox.configure(yscrollcommand=presets_scrollbar.set)
         self.load_presets()
 
         # ______ big setup button ______
@@ -66,6 +74,13 @@ class MainWindow(ParentUI):
             '<Enter>', lambda e: self.setup_button.config(bg='#4A7BF3'))
         self.setup_button.bind(
             '<Leave>', lambda e: self.setup_button.config(bg=COLORS['accent']))
+
+    def delete_selected_preset(self):
+        file_name = self.presets_listbox.get('active')
+        if not file_name:
+            return
+        delete_preset(file_name)
+        self.load_presets()
 
     def load_presets(self):
         self.presets_listbox.delete(0, 'end')

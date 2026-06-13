@@ -1,6 +1,7 @@
 import json
 from src.app.path import get_base_path
 from pathlib import Path
+import os
 
 
 def save_json(new_preset: dict[str, dict]) -> None:
@@ -31,3 +32,8 @@ def get_json_data(preset_name: str) -> dict:
 def get_all_preset_keys() -> list[str]:
     folder_path = Path(get_base_path('presets/'))
     return [file.name.replace('.json', '') for file in folder_path.glob('*.json')]
+
+
+def delete_preset(preset_name: str) -> None:
+    file_path = get_base_path(f'presets/{preset_name}.json')
+    os.remove(file_path)

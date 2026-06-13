@@ -60,14 +60,15 @@ class SetupApp(ParentUI):
 
         # ________config files________
         config_files_frame = make_frame(self.main_frame, row=2)
-        config_files_frame.columnconfigure(1, weight=1)
+        config_files_frame.columnconfigure(1, weight=3)
+        config_files_frame.columnconfigure(2, weight=0)
+        config_files_frame.columnconfigure(4, weight=2)
+        config_files_frame.columnconfigure(5, weight=0)
 
         config_file_name_label = make_label(
             config_files_frame,
             text='Enter config file name:',
             row=0, column=0, padx=(10, 5), pady=10, sticky='w')
-        config_file_name_label.grid(
-        )
 
         self.config_file_name_entry = tk.Entry(
             config_files_frame,
@@ -77,7 +78,7 @@ class SetupApp(ParentUI):
             font=('Arial', 11),
             relief='flat',
             highlightthickness=1,
-            highlightbackground=COLORS['entry_hl']
+            highlightbackground=COLORS['entry_hl'],
         )
         self.config_file_name_entry.grid(
             row=0, column=1, padx=(0, 10), pady=10, sticky='ew'
@@ -96,16 +97,20 @@ class SetupApp(ParentUI):
             font=('Arial', 10),
             relief='flat',
             highlightthickness=1,
-            highlightbackground='#404040',
+            highlightbackground=COLORS['entry_hl'],
             wrap='word',
             height=6)
         self.config_file_content_entry.grid(
-            row=1, column=1, padx=(0, 10), pady=(0, 10), sticky='ew')
-
+            row=1, column=1, padx=(0, 0), pady=(0, 10), sticky='nsew')
+        config_content_scrollbar = make_scrollbar(
+            config_files_frame, self.config_file_content_entry.yview,
+            row=1, column=2, padx=(0, 10), pady=(0, 10)
+        )
+        self.config_file_content_entry.config(yscrollcommand=config_content_scrollbar.set)
         config_files_listbox_label = make_label(
             config_files_frame,
             text='Config files list:',
-            row=0, column=2, padx=(20, 10), pady=(10, 5), sticky='w'
+            row=0, column=4, padx=(10, 10), pady=(10, 5), sticky='w'
         )
 
         self.config_files_listbox = tk.Listbox(
@@ -121,10 +126,15 @@ class SetupApp(ParentUI):
             width=25,
             selectmode='single')
         self.config_files_listbox.grid(
-            row=1, column=2, rowspan=2, padx=(20, 10), pady=10, sticky='ns'
+            row=1, column=4, rowspan=2, padx=(0, 0), pady=10, sticky='nsew'
         )
         self.config_files_listbox.bind(
             '<<ListboxSelect>>', self.choose_config_file_content)
+        config_files_listbox_scrollbar = make_scrollbar(
+            config_files_frame, self.config_files_listbox.yview,
+            row=1, column=5, rowspan=2, padx=(0, 10), pady=10
+        )
+        self.config_files_listbox.config(yscrollcommand=config_files_listbox_scrollbar.set)
         save_config_button = make_button(
             config_files_frame,
             text='Save config file',
